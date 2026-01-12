@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { CoverageDetail } from '../types';
-import { ChevronDown, ChevronUp, Info, ShieldCheck, ShieldAlert } from 'lucide-react';
+import { ChevronDown, ChevronUp, ShieldCheck, ShieldAlert, Lightbulb } from 'lucide-react';
 
 interface Props {
   coverage: CoverageDetail;
@@ -10,9 +10,14 @@ interface Props {
 const CoverageCard: React.FC<Props> = ({ coverage }) => {
   const [isOpen, setIsOpen] = useState(false);
 
+  const isMandatoryGroup = coverage.group.includes("Mandatory");
+  const isNowOptionalGroup = coverage.group.includes("Now Optional");
+
+  const hasOptionalIncrease = coverage.increased && !coverage.increased.toLowerCase().includes("no optional increase available");
+
   return (
-    <div className={`border rounded-xl transition-all duration-300 overflow-hidden ${
-      isOpen ? 'border-indigo-500 shadow-md ring-1 ring-indigo-100 bg-white' : 'border-slate-200 bg-white hover:border-slate-300'
+    <div className={`border rounded-lg transition-all duration-300 overflow-hidden ${
+      isOpen ? 'border-[#007db3] shadow-md ring-1 ring-[#007db3]/10 bg-white' : 'border-[#D8DCDB] bg-white hover:border-[#007db3]'
     }`}>
       <button 
         onClick={() => setIsOpen(!isOpen)}
@@ -20,52 +25,56 @@ const CoverageCard: React.FC<Props> = ({ coverage }) => {
       >
         <span className="text-3xl shrink-0 mt-1">{coverage.icon}</span>
         <div className="flex-grow">
-          <div className="flex items-center space-x-2">
-            <h3 className="font-bold text-slate-900">{coverage.title}</h3>
-            {coverage.category === 'mandatory' ? (
-              <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 text-[10px] font-bold uppercase rounded-full border border-indigo-100 flex items-center">
-                <ShieldCheck size={10} className="mr-1" /> Mandatory
+          <div className="flex flex-wrap items-center gap-2">
+            <h3 className="font-bold text-[#003359]">{coverage.title}</h3>
+            
+            {isMandatoryGroup && (
+              <span className="px-2 py-0.5 bg-[#006140] text-white text-[10px] font-bold uppercase rounded flex items-center">
+                <ShieldCheck size={10} className="mr-1" /> Mandatory Core
               </span>
-            ) : (
-              <span className="px-2 py-0.5 bg-amber-50 text-amber-700 text-[10px] font-bold uppercase rounded-full border border-amber-100 flex items-center">
-                <ShieldAlert size={10} className="mr-1" /> Optional
+            )}
+            
+            {isNowOptionalGroup && (
+              <span className="px-2 py-0.5 bg-[#007db3] text-white text-[10px] font-bold uppercase rounded flex items-center">
+                <ShieldAlert size={10} className="mr-1" /> Now Optional
               </span>
             )}
           </div>
-          <p className="text-slate-500 text-sm mt-1">{coverage.shortDesc}</p>
+          <p className="text-[#373737] opacity-70 text-sm mt-1">{coverage.summary}</p>
         </div>
-        <div className={`mt-2 ${isOpen ? 'text-indigo-600' : 'text-slate-400'}`}>
+        <div className={`mt-2 ${isOpen ? 'text-[#007db3]' : 'text-[#D8DCDB]'}`}>
           {isOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
         </div>
       </button>
 
       {isOpen && (
-        <div className="px-4 pb-5 pt-1 space-y-4 border-t border-slate-50 mt-1">
-          <div>
-            <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Description</h4>
-            <p className="text-slate-600 text-sm leading-relaxed">{coverage.fullDesc}</p>
-          </div>
-          
+        <div className="px-4 pb-5 pt-1 space-y-4 border-t border-[#D8DCDB]/30 mt-1">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
-              <h4 className="text-xs font-bold text-slate-500 uppercase mb-1">Standard (Mandatory)</h4>
-              <p className="text-slate-900 text-sm font-medium">{coverage.standardLimit}</p>
+            <div className="bg-[#D8DCDB]/20 p-4 rounded-md border border-[#D8DCDB]">
+              <h4 className="text-xs font-bold text-[#373737]/60 uppercase mb-2 flex items-center">
+                Standard / Base Level
+              </h4>
+              <p className="text-[#003359] text-sm leading-relaxed">{coverage.mandatory}</p>
             </div>
-            {coverage.optionalLimit && (
-              <div className="bg-indigo-50 p-3 rounded-lg border border-indigo-100">
-                <h4 className="text-xs font-bold text-indigo-500 uppercase mb-1">Optional Upgrade</h4>
-                <p className="text-indigo-900 text-sm font-medium">{coverage.optionalLimit}</p>
-              </div>
-            )}
+            
+            <div className={`p-4 rounded-md border ${hasOptionalIncrease || !isMandatoryGroup && !isNowOptionalGroup ? 'bg-[#FF8C11]/5 border-[#FF8C11]/20' : 'bg-gray-50 border-gray-200 opacity-60'}`}>
+              <h4 className={`text-xs font-bold uppercase mb-2 flex items-center ${hasOptionalIncrease || !isMandatoryGroup && !isNowOptionalGroup ? 'text-[#FF8C11]' : 'text-gray-400'}`}>
+                Optional / Enhanced Level
+              </h4>
+              <p className={`${hasOptionalIncrease || !isMandatoryGroup && !isNowOptionalGroup ? 'text-[#003359]' : 'text-gray-500'} text-sm leading-relaxed`}>
+                {coverage.increased}
+              </p>
+            </div>
           </div>
 
-          <div className="bg-blue-50 border border-blue-100 p-3 rounded-lg flex items-start space-x-3">
-            <Info size={16} className="text-blue-500 shrink-0 mt-0.5" />
-            <div>
-              <h4 className="text-xs font-bold text-blue-700 uppercase mb-0.5">Why this matters</h4>
-              <p className="text-blue-800 text-xs leading-normal">{coverage.whyItMatters}</p>
+          {coverage.tip && (
+            <div className="bg-[#007db3]/5 border border-dashed border-[#007db3]/30 p-4 rounded-lg flex items-start space-x-3">
+              <Lightbulb className="text-[#007db3] shrink-0 mt-0.5" size={18} />
+              <div className="text-sm italic text-[#003359]/80 leading-relaxed">
+                <span className="font-bold not-italic text-[#007db3] mr-1">Expert Tip:</span> {coverage.tip}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       )}
     </div>

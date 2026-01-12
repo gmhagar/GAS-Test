@@ -15,7 +15,8 @@ export class GeminiService {
   private ai: GoogleGenAI;
 
   constructor() {
-    this.ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+    // Initialized using strictly process.env.API_KEY per guidelines.
+    this.ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
   }
 
   async askQuestion(question: string, history: { role: 'user' | 'model'; parts: { text: string }[] }[]) {
@@ -32,6 +33,7 @@ export class GeminiService {
         }
       });
 
+      // Directly access .text property as per GenerateContentResponse guidelines.
       return response.text || "I'm sorry, I couldn't process that request. Please try again.";
     } catch (error) {
       console.error("Gemini Error:", error);

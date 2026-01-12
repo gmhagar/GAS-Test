@@ -4,13 +4,12 @@ export type CoverageCategory = 'mandatory' | 'optional';
 export interface CoverageDetail {
   id: string;
   title: string;
-  shortDesc: string;
-  fullDesc: string;
-  category: CoverageCategory;
-  standardLimit: string;
-  optionalLimit?: string;
-  whyItMatters: string;
+  summary: string;
+  mandatory: string;
+  increased: string;
+  group: string;
   icon: string;
+  tip?: string;
 }
 
 export interface TimelineStep {
@@ -20,8 +19,23 @@ export interface TimelineStep {
   status: 'completed' | 'current' | 'upcoming';
 }
 
-export interface ChatMessage {
-  role: 'user' | 'model';
-  text: string;
-  timestamp: Date;
+export interface QuizQuestion {
+  id: number;
+  question: string;
+  options: string[];
+  correctAnswer: string;
+  feedbackCorrect: string;
+  feedbackIncorrect: string;
+}
+
+export interface Scenario {
+  id: number;
+  title: string;
+  icon: string;
+  customerProfile: string;
+  correctCoverages: string[];
+  options: string[];
+  explanation: string;
+  explanationOption: string;
+  recommendationOption: string;
 }
