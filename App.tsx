@@ -1,11 +1,9 @@
-
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { COVERAGE_DATA, COVERAGE_GROUPS } from './constants';
 import { CoverageCategory } from './types';
 import Timeline from './components/Timeline';
 import CoverageCard from './components/CoverageCard';
 import Quiz from './components/Quiz';
-import Scenarios from './components/Scenarios';
 import { 
   ShieldCheck, 
   ArrowRight, 
@@ -34,15 +32,19 @@ import {
 } from 'lucide-react';
 
 const App: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'intro' | 'summary' | 'explorer' | 'scenarios' | 'quiz' | 'resources'>('intro');
+  const [activeTab, setActiveTab] = useState<'intro' | 'summary' | 'explorer' | 'quiz' | 'resources'>('intro');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Scroll to top whenever the tab changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [activeTab]);
 
   const tabs = [
     { id: 'intro', label: 'Welcome', duration: '1m' },
     { id: 'summary', label: 'Reform Overview', duration: '4m' },
-    { id: 'quiz', label: 'Reform Knowledge Check', duration: '5m' },
     { id: 'explorer', label: 'Coverage Reference', duration: '5m' },
-    { id: 'scenarios', label: 'Coverage Scenarios', duration: '8m' },
+    { id: 'quiz', label: 'Knowledge Check', duration: '5m' },
     { id: 'resources', label: 'Resources', duration: '2m' },
   ];
 
@@ -132,7 +134,7 @@ const App: React.FC = () => {
                 <div className="bg-white p-4 rounded-xl shadow-xl border border-[#D8DCDB] flex flex-col items-center animate-bounce duration-1000">
                   <Clock className="text-[#007db3] mb-1" size={24} />
                   <span className="text-[10px] font-black uppercase text-gray-400">Duration</span>
-                  <span className="text-xl font-black text-[#003359]">~25m</span>
+                  <span className="text-xl font-black text-[#003359]">~17m</span>
                 </div>
               </div>
 
@@ -155,22 +157,22 @@ const App: React.FC = () => {
                 <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="bg-white p-8 rounded-xl border border-[#D8DCDB] shadow-sm hover:shadow-md transition-all group">
                     <div className="bg-[#007db3]/10 p-4 rounded-lg text-[#007db3] w-fit mb-6 group-hover:bg-[#007db3] group-hover:text-white transition-colors">
-                      <Compass size={28} />
-                    </div>
-                    <h4 className="text-xl font-bold text-[#003359] mb-3">Guiding Customers</h4>
-                    <p className="text-gray-500 leading-relaxed">Learn to explain the "What" and "How" of coverage without stepping into prohibited recommendations.</p>
-                    <div className="mt-4 flex items-center gap-2 text-[10px] font-black text-[#007db3] uppercase tracking-widest">
-                       <Clock size={12} /> 10 Minutes Roleplay
-                    </div>
-                  </div>
-                  <div className="bg-white p-8 rounded-xl border border-[#D8DCDB] shadow-sm hover:shadow-md transition-all group">
-                    <div className="bg-[#006140]/10 p-4 rounded-lg text-[#006140] w-fit mb-6 group-hover:bg-[#006140] group-hover:text-white transition-colors">
                       <Search size={28} />
                     </div>
                     <h4 className="text-xl font-bold text-[#003359] mb-3">Core Reference</h4>
                     <p className="text-gray-500 leading-relaxed">A deep dive into the specific shifts of mandatory vs. optional limits for the 2026 modernization.</p>
-                    <div className="mt-4 flex items-center gap-2 text-[10px] font-black text-[#006140] uppercase tracking-widest">
+                    <div className="mt-4 flex items-center gap-2 text-[10px] font-black text-[#007db3] uppercase tracking-widest">
                        <Clock size={12} /> 5 Minutes Theory
+                    </div>
+                  </div>
+                  <div className="bg-white p-8 rounded-xl border border-[#D8DCDB] shadow-sm hover:shadow-md transition-all group">
+                    <div className="bg-[#006140]/10 p-4 rounded-lg text-[#006140] w-fit mb-6 group-hover:bg-[#006140] group-hover:text-white transition-colors">
+                      <Layers size={28} />
+                    </div>
+                    <h4 className="text-xl font-bold text-[#003359] mb-3">Reform Overview</h4>
+                    <p className="text-gray-500 leading-relaxed">Timeline and strategic shifts in the Ontario insurance landscape.</p>
+                    <div className="mt-4 flex items-center gap-2 text-[10px] font-black text-[#006140] uppercase tracking-widest">
+                       <Clock size={12} /> 4 Minutes Summary
                     </div>
                   </div>
                 </div>
@@ -298,29 +300,6 @@ const App: React.FC = () => {
 
             <div className="mt-12 flex justify-center">
               <button 
-                onClick={() => setActiveTab('quiz')}
-                className="bg-[#003359] text-white px-10 py-5 rounded-lg font-black uppercase tracking-[0.2em] flex items-center shadow-2xl hover:bg-[#007db3] transition-all group"
-              >
-                Next: Knowledge Check <ArrowRight size={20} className="ml-3 group-hover:translate-x-2 transition-transform" />
-              </button>
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'quiz' && (
-          <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="max-w-4xl mx-auto text-center">
-              <span className="inline-block px-4 py-1.5 bg-[#007db3]/10 text-[#007db3] text-[10px] font-black uppercase tracking-[0.3em] rounded-full mb-4">Module 2: Assessment</span>
-              <h2 className="text-4xl font-black text-[#003359] mb-4">Reform Knowledge Check</h2>
-              <p className="text-xl text-gray-500 font-medium">Test your understanding of the SABS changes.</p>
-            </div>
-            
-            <div className="max-w-4xl mx-auto">
-              <Quiz />
-            </div>
-
-            <div className="mt-12 flex justify-center">
-              <button 
                 onClick={() => setActiveTab('explorer')}
                 className="bg-[#003359] text-white px-10 py-5 rounded-lg font-black uppercase tracking-[0.2em] flex items-center shadow-2xl hover:bg-[#007db3] transition-all group"
               >
@@ -333,7 +312,7 @@ const App: React.FC = () => {
         {activeTab === 'explorer' && (
           <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500 relative">
             <div className="max-w-4xl mx-auto text-center mb-16">
-               <span className="inline-block px-4 py-1.5 bg-[#FF8C11]/10 text-[#FF8C11] text-[10px] font-black uppercase tracking-[0.3em] rounded-full mb-4">Module 3: Deep Dive</span>
+               <span className="inline-block px-4 py-1.5 bg-[#FF8C11]/10 text-[#FF8C11] text-[10px] font-black uppercase tracking-[0.3em] rounded-full mb-4">Module 2: Deep Dive</span>
               <h2 className="text-4xl font-black text-[#003359] mb-4">Benefit Reference Catalog</h2>
               <p className="text-xl text-gray-500 font-medium">Comprehensive comparison of coverage levels effective July 1, 2026.</p>
             </div>
@@ -391,25 +370,25 @@ const App: React.FC = () => {
 
             <div className="mt-20 flex justify-center">
               <button 
-                onClick={() => setActiveTab('scenarios')}
+                onClick={() => setActiveTab('quiz')}
                 className="bg-[#003359] text-white px-10 py-5 rounded-lg font-black uppercase tracking-[0.2em] flex items-center shadow-2xl hover:bg-[#007db3] transition-all group"
               >
-                Next: Role-Play Scenarios <ArrowRight size={20} className="ml-3 group-hover:translate-x-2 transition-transform" />
+                Next: Knowledge Check <ArrowRight size={20} className="ml-3 group-hover:translate-x-2 transition-transform" />
               </button>
             </div>
           </div>
         )}
 
-        {activeTab === 'scenarios' && (
+        {activeTab === 'quiz' && (
           <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="max-w-4xl mx-auto text-center">
-               <span className="inline-block px-4 py-1.5 bg-[#006140]/10 text-[#006140] text-[10px] font-black uppercase tracking-[0.3em] rounded-full mb-4">Module 4: Practical Application</span>
-              <h2 className="text-4xl font-black text-[#003359] mb-4">Interactive Scenarios</h2>
-              <p className="text-xl text-gray-500 font-medium">Practice identifying and communicating optional benefits.</p>
+              <span className="inline-block px-4 py-1.5 bg-[#007db3]/10 text-[#007db3] text-[10px] font-black uppercase tracking-[0.3em] rounded-full mb-4">Module 3: Assessment</span>
+              <h2 className="text-4xl font-black text-[#003359] mb-4">Reform Knowledge Check</h2>
+              <p className="text-xl text-gray-500 font-medium">Test your understanding of the SABS changes.</p>
             </div>
             
             <div className="max-w-4xl mx-auto">
-              <Scenarios />
+              <Quiz />
             </div>
 
             <div className="mt-12 flex justify-center">
@@ -426,7 +405,7 @@ const App: React.FC = () => {
         {activeTab === 'resources' && (
           <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-5xl mx-auto">
              <div className="text-center mb-16">
-               <span className="inline-block px-4 py-1.5 bg-gray-100 text-gray-500 text-[10px] font-black uppercase tracking-[0.3em] rounded-full mb-4">Module 5: Support</span>
+               <span className="inline-block px-4 py-1.5 bg-gray-100 text-gray-500 text-[10px] font-black uppercase tracking-[0.3em] rounded-full mb-4">Module 4: Support</span>
               <h2 className="text-4xl font-black text-[#003359] mb-4">Training Materials & Handouts</h2>
             </div>
 

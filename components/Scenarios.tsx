@@ -281,7 +281,7 @@ const Scenarios: React.FC = () => {
               onClick={handleProceedToDialogue}
               className="bg-[#003359] text-white px-10 py-4 rounded-lg font-black uppercase tracking-widest shadow-2xl hover:bg-[#007db3] transition-all flex items-center group"
             >
-              Step 2: Role-Play <ArrowRight size={20} className="ml-3 group-hover:translate-x-2 transition-transform" />
+              Step 2: Respond to the Customer <ArrowRight size={20} className="ml-3 group-hover:translate-x-2 transition-transform" />
             </button>
           </div>
         </div>
